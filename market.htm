@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+/**
+*
+*/
+function ordre(id, prix, quantite) {
+    //date = new Date();  
+    this.id = id;
+    this.prix = prix;
+    this.quantite = quantite;
+    //this.date = date.getTime();
+    if(id && quantite && prix) {
+        carnet.add(this);
+    }
+};
+
+/**
+*
+*/
+function achat() {
+    ordre.apply(this, arguments);
+};
+achat.prototype.constructor = achat;
+
+/**
+*
+*/
+function vente() {
+    ordre.apply(this, arguments);
+};
+vente.prototype.constructor = vente;
+
+/**
+*
+*/
+function carnet() {
+    this.ordresAchats = new Array();
+    this.ordresVentes = new Array();
+}
+carnet.prototype.add = function(ordre) {
+		if(ordre instanceof achat) {
+			this.ordresAchats.push(ordre);
+		} else if(ordre instanceof vente) {
+			this.ordresVentes.push(ordre);
+		}
+}
+carnet.prototype.sort = function() {
+    function cmp(x, y) {
+        return x > y ? 1 : x < y ? -1 : 0;
+    }
+    this.ordresAchats.sort(function(a, b) {
+        return [
+            -cmp(a.prix, b.prix), cmp(a.q, b.id)
+        ] < [
+            -cmp(b.prix, a.prix), cmp(b.id, a.id)
+        ] ? -1 : 1;
+    });
+    this.ordresVentes.sort(function(a, b) {
+        return [
+            cmp(a.prix, b.prix), cmp(a.q, b.id)
+        ] < [
+            cmp(b.prix, a.prix), cmp(b.id, a.id)
+        ] ? -1 : 1;
+    });
+}
+
+
+/*---------------------------------------------------------*/
+
+carnet = new carnet();
+
+buy = new achat(1, 10, 50);
+buy = new achat(2, 10, 40);
+buy = new achat(3, 20, 30);
+buy = new achat(4, 20, 50);
+buy = new achat(5, 20, 40);
+
+buy = new vente(1, 30, 40);
+buy = new vente(2, 40, 40);
+buy = new vente(3, 30, 30);
+buy = new vente(4, 40, 50);
+buy = new vente(5, 40, 20);
+
+
+carnet.sort();
+console.debug(carnet);
+
+
+
+</script>
+
+</head>
+<body>
+
+</body>
+</html>
