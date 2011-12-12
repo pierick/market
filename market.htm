@@ -8,13 +8,14 @@
 /**
 *
 */
-function ordre(id, prix, quantite) {
+function ordre(prix, quantite, sens) {
     //date = new Date();  
-    this.id = id;
+    //this.id = id;
     this.prix = prix;
     this.quantite = quantite;
+	this.sens = sens;
     //this.date = date.getTime();
-    if(id && quantite && prix) {
+    if(quantite && prix && (sens == 'A' || sens == 'V')) {
         carnet.add(this);
     }
 };
@@ -39,15 +40,78 @@ vente.prototype.constructor = vente;
 *
 */
 function carnet() {
-    this.ordresAchats = new Array();
-    this.ordresVentes = new Array();
+	this.ordres = new Array();
+	this.prices = new Array();
+    this.ordres.ventes = new Array();
+    this.ordres.achats = new Array();
 }
 carnet.prototype.add = function(ordre) {
+
+//var myArray = new Array();
+
+/*
+myArray["a"] = 100;
+alert(myArray.a);
+
+myArray.b = 200;
+alert(myArray["b"]);
+*/
+	if(ordre.sens == "A") {
+		this.ordres.ventes[ordre.prix] = ordre;
+	}
+	else if(ordre.sens == "V") {
+		this.ordres.achats[ordre.prix] = ordre;
+	}
+
+	//console.log(this.ordres);
+	
+	/*
+	if(!this.ordres[ordre.sens][ordre.prix]) {
+		this.ordres[ordre.sens][ordre.prix] = {
+			price: ordre.prix, 
+			quantite: ordre.quantite, sens:ordre.sens
+		};
+	} else {
+	
+		//console.log(this.ordres[ordre.prix].quantite);
+	
+		this.ordres[ordre.sens][ordre.prix] = {
+			price: ordre.prix, 
+			quantite: (this.ordres[ordre.sens][ordre.prix].quantite + ordre.quantite), 
+			sens:ordre.sens
+		};
+	}
+	*/
+	
+	/*
+	if(ordre instanceof achat) {
+		this.ordresAchats[ordre.prix] = ordre;
+	} else if(ordre instanceof vente) {
+		this.ordresAchats[ordre.prix] = ordre;
+	}
+	*/
+	/*
+	if(this.prices.indexOf(ordre.prix) == -1) {
+		
+
+		
+	} else {
+	
 		if(ordre instanceof achat) {
-			this.ordresAchats.push(ordre);
+		
 		} else if(ordre instanceof vente) {
-			this.ordresVentes.push(ordre);
+		
 		}
+	
+	}
+	*/
+	/*
+	if(ordre instanceof achat) {
+		this.ordresAchats.push(ordre);
+	} else if(ordre instanceof vente) {
+		this.ordresVentes.push(ordre);
+	}
+	*/
 }
 carnet.prototype.sort = function() {
     function cmp(x, y) {
@@ -74,18 +138,19 @@ carnet.prototype.sort = function() {
 
 carnet = new carnet();
 
-buy = new achat(1, 10, 50);
-buy = new achat(2, 10, 40);
-buy = new achat(3, 20, 30);
-buy = new achat(4, 20, 50);
-buy = new achat(5, 20, 40);
+buy = new ordre(60, 50, 'V');
+buy = new ordre(10, 40, 'A');
+buy = new ordre(20, 30, 'A');
+buy = new ordre(20, 50, 'V');
+buy = new ordre(20, 40, 'A');
 
+/*
 buy = new vente(1, 30, 40);
 buy = new vente(2, 40, 40);
 buy = new vente(3, 30, 30);
 buy = new vente(4, 40, 50);
 buy = new vente(5, 40, 20);
-
+*/
 
 carnet.sort();
 console.debug(carnet);
