@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
+<meta charset="UTF-8">
 <title>Insert title here</title>
 <script type="text/javascript">
 
@@ -40,7 +40,6 @@ carnet.prototype.add = function(ordre) {
 	
 	if(this.achats[0] && this.ventes[0]) {
 		if(this.achats[0]["prix"] >= this.ventes[0]["prix"]) {
-			//console.debug(this.achats[0]["prix"], this.ventes[0]["prix"]);
 			
 			q = this.achats[0]["quantite"] - this.ventes[0]["quantite"];
 			
@@ -94,43 +93,28 @@ function passOrdre() {
 	
 	for(var i = 0; i < radioObj.length; i++) {
 		if(radioObj[i].checked) {
-			//return radioObj[i].value;
 			sens = radioObj[i].value;
 		}
 	}
 	
 	//o = new ordre(prix, quantite, sens);
 	
-	//document.getElementById('lignes').;
+	type = {A:"achat", V:"ventes"};
 	
-	//var Nodenew = document.createElement("option");
-	var texte = document.createTextNode(prix + " " + quantite + " " + sens);
-	lignes.appendChild(texte); 
-	br = document.createElement('br');
-	lignes.appendChild(br); 
-	
-	//lignes.appendChild("<p>111</p>");
-	
-	//console.clear();
-	//console.log(carnet);
-}
+	ordre = document.createElement("div");
+	content = document.createTextNode(type[sens] + ' de ' + quantite + ' unités pour ' + prix + " $");
+  ordre.appendChild(content);
+  
+  if(lignes.firstChild) {
+  	lignes.insertBefore(ordre, lignes.firstChild);
+  } else {
+  	lignes.appendChild(ordre);
+  }
 
+}
 
 /*---------------------------------------------------------*/
 
-//
-/*
-o = new ordre(60, 50, 'V');
-o = new ordre(10, 40, 'A');
-o = new ordre(20, 30, 'A');
-o = new ordre(30, 50, 'V');
-o = new ordre(20, 40, 'A');
-o = new ordre(60, 20, 'V');
-o = new ordre(10, 40, 'V');
-o = new ordre(20, 40, 'A');
-o = new ordre(20, 50, 'V');
-o = new ordre(30, 40, 'A');
-*/
 //console.debug(carnet);
 
 carnet = new carnet();
@@ -139,10 +123,9 @@ carnet = new carnet();
 
 </head>
 <body>
-
-prix <input type="text" id="prix" name="prix" size="3" />
-quantite <input type="text" id="quantite" name="quantite" size="3" />
-Achat <input type="radio" name="sens" id="a" value="A" />
+quantite <input type="text" id="quantite" name="quantite" size="3" value="10" />
+prix <input type="text" id="prix" name="prix" size="3"  value="100" />
+Achat <input type="radio" name="sens" id="a" value="A" checked="checked" />
 Vente <input type="radio" name="sens" id="v" value="V" />
 <input type="button" id="button" name="button" value="ok" onclick="passOrdre();" />
 
