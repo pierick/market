@@ -44,13 +44,16 @@ carnet.prototype.add = function(ordre) {
 			
 			q = this.achats[0]["quantite"] - this.ventes[0]["quantite"];
 			
+			/*
 			if(q >= 0) {
 				this.achats.shift();
 			} else if(q <= 0) {
 				this.ventes.shift();
 			}
+			*/
 			
 			// this.add ...
+			//o = new ordre(this.achats[0]["prix"], q, 'A');
 			
 		}
 	}
@@ -83,11 +86,40 @@ carnet.prototype.sort = function() {
     });
 }
 
+function passOrdre() {
+	lignes = document.getElementById('lignes');
+	prix = document.getElementById('prix').value;
+	quantite = document.getElementById('quantite').value;
+	radioObj = document.getElementsByName('sens');
+	
+	for(var i = 0; i < radioObj.length; i++) {
+		if(radioObj[i].checked) {
+			//return radioObj[i].value;
+			sens = radioObj[i].value;
+		}
+	}
+	
+	//o = new ordre(prix, quantite, sens);
+	
+	//document.getElementById('lignes').;
+	
+	//var Nodenew = document.createElement("option");
+	var texte = document.createTextNode(prix + " " + quantite + " " + sens);
+	lignes.appendChild(texte); 
+	br = document.createElement('br');
+	lignes.appendChild(br); 
+	
+	//lignes.appendChild("<p>111</p>");
+	
+	//console.clear();
+	//console.log(carnet);
+}
+
 
 /*---------------------------------------------------------*/
 
-carnet = new carnet();
-
+//
+/*
 o = new ordre(60, 50, 'V');
 o = new ordre(10, 40, 'A');
 o = new ordre(20, 30, 'A');
@@ -98,15 +130,23 @@ o = new ordre(10, 40, 'V');
 o = new ordre(20, 40, 'A');
 o = new ordre(20, 50, 'V');
 o = new ordre(30, 40, 'A');
+*/
+//console.debug(carnet);
 
-console.debug(carnet);
-
-
+carnet = new carnet();
 
 </script>
 
 </head>
 <body>
+
+prix <input type="text" id="prix" name="prix" size="3" />
+quantite <input type="text" id="quantite" name="quantite" size="3" />
+Achat <input type="radio" name="sens" id="a" value="A" />
+Vente <input type="radio" name="sens" id="v" value="V" />
+<input type="button" id="button" name="button" value="ok" onclick="passOrdre();" />
+
+<div id="lignes"></div>
 
 </body>
 </html>
