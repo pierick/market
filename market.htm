@@ -101,7 +101,7 @@ function passOrdre() {
 	
 	type = {A:"achat", V:"ventes"};
 	
-	ordre = document.createElement("div");
+	ordre = document.createElement("p");
 	content = document.createTextNode(type[sens] + ' de ' + quantite + ' unités pour ' + prix + " $");
   ordre.appendChild(content);
   
@@ -121,14 +121,34 @@ carnet = new carnet();
 
 </script>
 
+<style>
+
+* {
+margin: 0;
+padding: 0;
+}
+
+#lignes {
+	display: inline-block;
+	overflow-y: auto;
+	height: 200px;
+	padding: 0 30px;
+	border: 1px solid gray;
+}
+p {
+	white-space: nowrap;
+}
+</style>
+
 </head>
 <body>
+<div>
 quantite <input type="text" id="quantite" name="quantite" size="3" value="10" />
 prix <input type="text" id="prix" name="prix" size="3"  value="100" />
 Achat <input type="radio" name="sens" id="a" value="A" checked="checked" />
 Vente <input type="radio" name="sens" id="v" value="V" />
 <input type="button" id="button" name="button" value="ok" onclick="passOrdre();" />
-
+</div>
 <div id="lignes"></div>
 
 </body>
