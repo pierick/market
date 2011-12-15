@@ -123,26 +123,29 @@ carnet = new carnet();
 
 <style>
 
-* {
-margin: 0;
-padding: 0;
+#tradeForm {
+	display: inline-block;
+	padding: 10px;
+	margin: 5px;
+	border: 1px solid gray;
 }
 
 #lignes {
-	display: inline-block;
-	overflow-y: auto;
+	width: 357px;
 	height: 200px;
-	padding: 0 30px;
+	padding: 5px;
+	margin: 5px;
 	border: 1px solid gray;
+	overflow-y: scroll;
 }
 p {
-	white-space: nowrap;
+	margin: 0px;
 }
 </style>
 
 </head>
 <body>
-<div>
+<div id="tradeForm">
 quantite <input type="text" id="quantite" name="quantite" size="3" value="10" />
 prix <input type="text" id="prix" name="prix" size="3"  value="100" />
 Achat <input type="radio" name="sens" id="a" value="A" checked="checked" />
