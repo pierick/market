@@ -8,32 +8,65 @@
 /**
 *
 */
-function ordre(prix, quantite, sens) {
-    //date = new Date();  
-    //this.id = id;
-    this.prix = prix;
-    this.quantite = quantite;
+function ordre(quantite, prix, sens) {
+	//date = new Date();  
+	//this.id = id;
+	this.prix = prix;
+	this.quantite = quantite;
 	this.sens = sens;
-    //this.date = date.getTime();
-    if(quantite && prix && (sens == 'A' || sens == 'V')) {
-        carnet.add(this);
-    }
+	//this.date = date.getTime();
 };
 
 /**
 *
 */
 function carnet() {
-  this.achats = new Array();
-  this.ventes = new Array();
+	
+	this.minBuy = null;
+	this.maxSell = null;
+	
+	this.achats = new Array();
+	this.ventes = new Array();
 }
 carnet.prototype.add = function(ordre) {
 
+	if(!ordre.quantite || !ordre.prix || (ordre.sens != 'A' && ordre.sens != 'V')) {
+		console.log('error');
+		return;
+	}
+
+	if(!isNumber(ordre.prix) || !isNumber(ordre.quantite)) {
+		console.log('invalid price or quantity');
+		return;	
+	}
+	
+	if(!isInteger(ordre.quantite)) {
+		console.log('invalid price or quantity');
+		return;		
+	}	
+	
+	if(this.achats.length > 0) {
+		this.minBuy = this.minProp(this.achats, 'prix');
+	}
+	if(this.ventes.length > 0) {
+		this.maxSell = this.maxProp(this.ventes, 'prix');
+	}
+
 	if(ordre.sens == "A") {
-		this.achats.push(ordre);
+		if(this.maxSell && ordre.prix > this.maxSell) {
+			console.log('prix d\'achat trop élevé');
+			return;
+		} else {
+			this.achats.push(ordre);
+		}
 	}
 	else if(ordre.sens == "V") {
-		this.ventes.push(ordre);
+		if(this.minBuy && ordre.prix < this.minBuy) {
+			console.log('prix de vente trop bas');
+			return;
+		} else {
+			this.ventes.push(ordre);
+		}
 	}
 	
 	this.sort();
@@ -63,83 +96,122 @@ carnet.prototype.add = function(ordre) {
 	}
 	*/
 
+	this.updateLinesDisplay(ordre);
 	
+	return true;
 }
 carnet.prototype.sort = function() {
-    function cmp(x, y) {
-        return x > y ? 1 : x < y ? -1 : 0;
-    }
-    this.achats.sort(function(a, b) {
-        return [
-            -cmp(a.prix, b.prix), cmp(a.id, b.id)
-        ] < [
-            -cmp(b.prix, a.prix), cmp(b.id, a.id)
-        ] ? -1 : 1;
-    });
-    this.ventes.sort(function(a, b) {
-        return [
-            cmp(a.prix, b.prix), cmp(a.id, b.id)
-        ] < [
-            cmp(b.prix, a.prix), cmp(b.id, a.id)
-        ] ? -1 : 1;
-    });
+	function cmp(x, y) {
+		return x > y ? 1 : x < y ? -1 : 0;
+	}
+	this.achats.sort(function(a, b) {
+		return [
+		-cmp(a.prix, b.prix), cmp(a.id, b.id)
+		] < [
+		-cmp(b.prix, a.prix), cmp(b.id, a.id)
+		] ? -1 : 1;
+	});
+	this.ventes.sort(function(a, b) {
+		return [
+		cmp(a.prix, b.prix), cmp(a.id, b.id)
+		] < [
+		cmp(b.prix, a.prix), cmp(b.id, a.id)
+		] ? -1 : 1;
+	});
 }
+carnet.prototype.updateLinesDisplay = function(o) {
+	type = {A:"achat", V:"ventes"};
+	line = document.createElement("p");
+	content = document.createTextNode(type[o.sens] 
+		+ ' de ' + o.quantite 
+		+ ' unités pour ' 
+		+ o.prix + " $");
+	line.appendChild(content);
+	lignes = document.getElementById('lignes');
+	if(lignes.firstChild) {
+		lignes.insertBefore(line, lignes.firstChild);
+	} else {
+		lignes.appendChild(line);
+	}
+}
+carnet.prototype.maxProp = function (array, prop) {
+  var values = array.map(function (el) {
+    return el[prop];
+  });
+  return Math.max.apply(Math, values);
+};
+carnet.prototype.minProp = function (array, prop) {
+  var values = array.map(function (el) {
+    return el[prop];
+  });
+  return Math.min.apply(Math, values);
+};
 
 function passOrdre() {
-	lignes = document.getElementById('lignes');
+	
 	prix = document.getElementById('prix').value;
 	quantite = document.getElementById('quantite').value;
 	radioObj = document.getElementsByName('sens');
-	
 	for(var i = 0; i < radioObj.length; i++) {
 		if(radioObj[i].checked) {
 			sens = radioObj[i].value;
+			break;
 		}
 	}
-	
-	//o = new ordre(prix, quantite, sens);
-	
-	type = {A:"achat", V:"ventes"};
-	
-	ordre = document.createElement("p");
-	content = document.createTextNode(type[sens] + ' de ' + quantite + ' unités pour ' + prix + " $");
-  ordre.appendChild(content);
-  
-  if(lignes.firstChild) {
-  	lignes.insertBefore(ordre, lignes.firstChild);
-  } else {
-  	lignes.appendChild(ordre);
-  }
+
+	o = new ordre(quantite, prix, sens);
+	if(carnet.add(o)) {
+		//carnet.updateLinesDisplay(o);
+	}
 
 }
 
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+/*
+Array.maxProp = function (array, prop) {
+  var values = array.map(function (el) {
+    return el[prop];
+  });
+  return Math.max.apply(Math, values);
+};
+Array.minProp = function (array, prop) {
+  var values = array.map(function (el) {
+    return el[prop];
+  });
+  return Math.min.apply(Math, values);
+};
+*/
+
+
 /*---------------------------------------------------------*/
 
-//console.debug(carnet);
-
 carnet = new carnet();
+//console.debug(carnet);
 
 </script>
 
 <style>
 
 #tradeForm {
-	display: inline-block;
-	padding: 10px;
-	margin: 5px;
-	border: 1px solid gray;
+display: inline-block;
+padding: 10px;
+margin: 5px;
+border: 1px solid gray;
 }
 
 #lignes {
-	width: 357px;
-	height: 200px;
-	padding: 5px;
-	margin: 5px;
-	border: 1px solid gray;
+width: 357px;
+height: 200px;
+padding: 5px;
+margin: 5px;
+border: 1px solid gray;
 	overflow-y: scroll;
 }
 p {
-	margin: 0px;
+margin: 0px;
 }
 </style>
 
